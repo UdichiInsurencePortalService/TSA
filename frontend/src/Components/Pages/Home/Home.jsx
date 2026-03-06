@@ -9,7 +9,7 @@ import Ced from '../../../images/client/Ced.png'
 import Coromander from '../../../images/client/Coromander.png'
 import HMB from '../../../images/client/HMB.png'
 import LBSS from '../../../images/client/LBSS.png'
-import Logoa from '../../../images/client/Logoa.png'
+import Logoa from '../../../images/client/LOGOa.png'
 import Manab from '../../../images/client/Manab.png'
 import nrl from '../../../images/client/nrl.png'
 import nsdc from '../../../images/client/nsdc.png'
@@ -697,7 +697,6 @@ const clientsData = [
   { name:"Coromander",    imageKey:"Coromander",   sector:"Technology",   bg:"#f0fdf4" },
   { name:"HMB",           imageKey:"HMB",          sector:"Staffing",     bg:"#eff6ff" },
   { name:"LBSS",          imageKey:"LBSS",         sector:"Recruitment",  bg:"#faf5ff" },
-  { name:"Logo",          imageKey:"Logo",         sector:"HR Services",  bg:"#fff1f2" },
   { name:"Logoa",         imageKey:"Logoa",        sector:"Networking",   bg:"#ecfeff" },
   { name:"Manab",         imageKey:"Manab",        sector:"Development",  bg:"#f0fdf4" },
   { name:"NRL",           imageKey:"nrl",          sector:"Energy",       bg:"#eff6ff" },
