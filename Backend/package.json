@@ -1,0 +1,55 @@
+{
+  "name": "talent-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Talent and Skill Assessment Backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "postgres",
+    "render",
+    "neon",
+    "talent-assessment"
+  ],
+  "author": "UdicInsurancePortalService",
+  "license": "ISC",
+  "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/face_detection": "^0.4.1646425229",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.12",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.16.3",
+    "resend": "^6.9.1",
+    "socket.io": "^4.8.3",
+    "uuid": "^13.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
+  }
+}

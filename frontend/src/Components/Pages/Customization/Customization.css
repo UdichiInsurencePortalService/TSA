@@ -1,0 +1,586 @@
+/* ==================== CUSTOMIZATION INTRO SECTION ==================== */
+.customization-intro {
+  padding: 20px;
+  /* background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); */
+}
+
+/* ==================== CUSTOMIZATION GENERAL STYLES ==================== */
+.customization {
+  margin: 40px auto;
+  padding: 40px 20px;
+  max-width: 900px;
+  text-align: center;
+}
+
+.customization h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #111827, #1e40af, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.customization p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0 auto 30px;
+  max-width: 750px;
+}
+
+.customization .btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e40af, #7c3aed);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.customization .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+  color: #fff;
+}
+
+.btn-demo {
+  background: linear-gradient(135deg, #1e40af, #7c3aed);
+}
+
+/* ==================== CUSTOM TESTS SECTION ==================== */
+.custom-tests-section {
+  min-height: auto;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  padding: 60px 0;
+}
+
+.custom-image {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  border-radius: 12px;
+  object-fit: cover;
+  transition: transform 0.5s ease, filter 0.5s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.custom-image:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15));
+}
+
+/* ==================== TAG BADGE ==================== */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #dbeafe, #e9d5ff);
+  border: 1px solid #93c5fd;
+  margin-bottom: 2rem;
+  animation: slideInDown 0.6s ease;
+}
+
+.tag-text {
+  color: #1d4ed8;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==================== MAIN TITLE ==================== */
+.main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  animation: slideInUp 0.8s ease;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #111827, #1e40af, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-dark {
+  color: #1f2937;
+}
+
+/* ==================== DESCRIPTION TEXT ==================== */
+.description-text {
+  font-size: 1.125rem;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.8s ease 0.2s both;
+}
+
+/* ==================== FEATURES CONTAINER ==================== */
+.features-container {
+  display: flex;
+  /* width: ; */
+  flex-direction: row;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  animation: slideInRight 0.6s ease both;
+}
+
+.feature-item:nth-child(1) { animation-delay: 0.1s; }
+.feature-item:nth-child(2) { animation-delay: 0.2s; }
+.feature-item:nth-child(3) { animation-delay: 0.3s; }
+.feature-item:nth-child(4) { animation-delay: 0.4s; }
+
+.feature-item:hover {
+  background: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  margin-right: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.feature-item:hover .feature-icon {
+  transform: scale(1.15);
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.icon-blue {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: white;
+}
+
+.icon-purple {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: white;
+}
+
+.icon-green {
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  color: white;
+}
+
+.icon-orange {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+}
+
+.feature-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.feature-item:hover .feature-title {
+  color: #1d4ed8;
+}
+
+.feature-description {
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ==================== DYNAMIC FORMATS SECTION ==================== */
+.dynamic-formats-section {
+  background: linear-gradient(135deg, #f1f5f9 0%, #fef3c7 100%);
+  padding: 60px 20px;
+}
+
+/* ==================== SIMULATIONS SECTION ==================== */
+/* .simulations-section {
+  background: linear-gradient(135deg, #fef3c7 0%, #f3e8ff 100%);
+  padding: 60px 20px;
+} */
+
+.cta-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  animation: fadeIn 1s ease;
+}
+
+.cta-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #1e40af, #7c3aed);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cta-button:hover::before {
+  left: 100%;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
+  color: white;
+}
+
+.cta-button span {
+  position: relative;
+  z-index: 2;
+}
+
+.arrow-icon {
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* ==================== CANDIDATE EXPERIENCE SECTION ==================== */
+.candidate-experience-section {
+  background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 100%);
+  padding: 60px 20px;
+}
+
+/* ==================== TESTIMONIAL SECTION ==================== */
+/* .testimonial-section {
+  background: linear-gradient(135deg, #dbeafe 0%, #f8fafc 100%);
+  padding: 80px 20px;
+} */
+
+/* ==================== SUBSCRIPTION FOOTER WRAPPER ==================== */
+/* .subscription-footer-wrapper {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  padding: 60px 20px;
+} */
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN - TABLET (768px - 991px) ==================== */
+@media (max-width: 991px) and (min-width: 768px) {
+  .main-title {
+    font-size: 2.5rem;
+  }
+
+  .custom-tests-section {
+    padding: 40px 0;
+  }
+
+  .feature-item {
+    padding: 1.25rem;
+  }
+
+  .feature-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+  }
+
+  .customization h1 {
+    font-size: 2rem;
+  }
+
+  .customization p {
+    font-size: 1rem;
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN - SMALL MOBILE (576px - 767px) ==================== */
+@media (max-width: 767px) and (min-width: 576px) {
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .custom-image {
+    max-width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .description-text {
+    font-size: 1rem;
+  }
+
+  .feature-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.125rem;
+    margin-right: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem;
+  }
+
+  .feature-description {
+    font-size: 0.9rem;
+  }
+
+  .customization h1 {
+    font-size: 1.75rem;
+  }
+
+  .customization {
+    padding: 30px 15px;
+  }
+
+  .cta-button {
+    padding: 12px 26px;
+    font-size: 0.95rem;
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN - EXTRA SMALL MOBILE (< 576px) ==================== */
+@media (max-width: 575px) {
+  .customization-intro {
+    padding: 40px 15px;
+  }
+
+  .customization {
+    margin: 30px auto;
+    padding: 25px 15px;
+  }
+
+  .customization h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .customization p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .custom-tests-section {
+    padding: 30px 0;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .description-text {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-badge {
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-text {
+    font-size: 0.75rem;
+  }
+
+  .feature-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .feature-title {
+    font-size: 0.95rem;
+  }
+
+  .feature-description {
+    font-size: 0.85rem;
+  }
+
+  .features-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .custom-image {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-button {
+    padding: 11px 24px;
+    font-size: 0.9rem;
+  }
+
+  .arrow-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+  }
+
+  .testimonial-section {
+    padding: 40px 15px;
+  }
+
+  .subscription-footer-wrapper {
+    padding: 40px 15px;
+  }
+}
+
+/* ==================== LANDSCAPE ORIENTATION FIX ==================== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .custom-tests-section {
+    min-height: auto;
+    padding: 30px 0;
+  }
+
+  .customization {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .main-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .description-text {
+    margin-bottom: 1rem;
+  }
+
+  .feature-item {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+.cta-button:focus,
+.customization .btn:focus {
+  outline: 2px solid #1e40af;
+  outline-offset: 2px;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.ps-lg-5 {
+  padding-left: 3rem;
+}
+
+@media (max-width: 991px) {
+  .ps-lg-5 {
+    padding-left: 0;
+  }
+}

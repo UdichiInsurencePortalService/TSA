@@ -1,0 +1,27 @@
+.sd-container { padding: 24px; font-family: Inter, system-ui, Arial; }
+.sd-grid { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.sd-camera-panel { width: 340px; }
+.sd-video-on { border: 3px solid #28a745; border-radius: 8px; }
+.sd-video-off { border: 3px dashed #ccc; border-radius: 8px; }
+.sd-monitor-info { margin-top: 8px; font-size: 14px; color: #333; }
+.sd-error { color: #e53e3e; margin-top: 8px; }
+
+.sd-questions-panel { flex: 1; min-width: 380px; }
+.sd-questions-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; }
+.sd-loading { font-size: 14px; color: #666; }
+
+.sd-question-card { background: #fff; border: 1px solid #eee; padding: 14px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+.sd-question-text { font-weight: 600; margin-bottom: 10px; color: #1a202c; }
+.sd-qno { color: #2563eb; margin-right: 6px; }
+.sd-options { display:flex; flex-direction: column; gap: 6px; }
+.sd-option { cursor: pointer; font-size: 15px; }
+.sd-option input { margin-right: 8px; }
+.sd-opt-letter { font-weight: 700; margin-right: 6px; }
+.sd-actions { margin-top: 12px; }
+.sd-result-card { max-width: 540px; margin: 60px auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; text-align:center; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+.sd-score { font-size: 28px; font-weight: 700; color: #1a202c; }
+/* single-question layout tweaks */
+.sd-single-question { display: flex; flex-direction: column; gap: 12px; }
+.sd-nav-buttons { display: flex; gap: 12px; margin-top: 12px; align-items: center; }
+.sd-progress { color: #555; font-size: 14px; }
+.sd-no-questions { padding: 12px; color: #666; }
