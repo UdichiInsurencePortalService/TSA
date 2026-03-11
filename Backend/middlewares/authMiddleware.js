@@ -1,28 +1,32 @@
-const jwt = require("jsonwebtoken");
+const { verifyJWT } = require("../Token/tokens");
 const usersModel = require("../Model/usersModel");
 
 const COOKIE_NAME = process.env.COOKIE_NAME || "ta_token";
 
-const requireAuth = async (req, res, next) => {
+async function requireAuth(req, res, next) {
   try {
+
     const token = req.cookies[COOKIE_NAME];
 
     if (!token) {
-      return res.status(401).json({ error: "Not logged in" });
+      return res.status(401).json({ error: "No token provided" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = verifyJWT(token);
 
     const user = await usersModel.findById(decoded.sub);
+
     if (!user) {
-      return res.status(401).json({ error: "User not found" });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
     req.user = user;
+
     next();
+
   } catch (err) {
     return res.status(401).json({ error: "Invalid token" });
   }
-};
+}
 
-module.exports = { requireAuth };
+module.exports = requireAuth;

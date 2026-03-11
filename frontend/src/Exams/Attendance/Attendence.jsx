@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Container,
   Row,
@@ -16,6 +16,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Attendence.css";
 
 export default function AttendancePage() {
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+
   const [formData, setFormData] = useState({
     examCode: "",
     institutionName: "",
@@ -23,7 +26,6 @@ export default function AttendancePage() {
     fatherName: "",
     mobileNumber: "",
     aadharNumber: "",
-    photo: null,
   });
 
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -34,23 +36,38 @@ export default function AttendancePage() {
   const [candidateLat, setCandidateLat] = useState(null);
   const [candidateLng, setCandidateLng] = useState(null);
 
-  const [toastMsg, setToastMsg] = useState("");
-  const [toastVariant, setToastVariant] = useState("success");
-  const [showToast, setShowToast] = useState(false);
-
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  const [toast, setToast] = useState({
+    show: false,
+    msg: "",
+    variant: "success",
+  });
 
   /* ================= INPUT ================= */
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  /* ================= TOAST ================= */
+
+  const showToast = useCallback((msg, variant = "success") => {
+    setToast({ show: true, msg, variant });
+  }, []);
 
   /* ================= LOCATION ================= */
-  const enableLocation = () => {
+
+  const toggleLocation = useCallback(() => {
+    if (locationEnabled) {
+      setLocationEnabled(false);
+      setCandidateLat(null);
+      setCandidateLng(null);
+      showToast("Location disabled", "warning");
+      return;
+    }
+
     if (!navigator.geolocation) {
-      setToastMsg("Geolocation not supported");
-      setToastVariant("danger");
-      setShowToast(true);
+      showToast("Geolocation not supported", "danger");
       return;
     }
 
@@ -59,105 +76,127 @@ export default function AttendancePage() {
         setCandidateLat(pos.coords.latitude);
         setCandidateLng(pos.coords.longitude);
         setLocationEnabled(true);
-        setToastMsg("📍 Location enabled successfully");
-        setToastVariant("success");
-        setShowToast(true);
+        showToast("📍 Location enabled successfully");
       },
       () => {
-        setToastMsg("Location permission denied");
-        setToastVariant("danger");
-        setShowToast(true);
+        showToast("Location permission denied", "danger");
       },
       { enableHighAccuracy: true }
     );
-  };
+  }, [locationEnabled, showToast]);
 
   /* ================= CAMERA ================= */
-  const openCamera = async () => {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    setStream(mediaStream);
-    setShowCamera(true);
-    setTimeout(() => (videoRef.current.srcObject = mediaStream), 200);
-  };
 
-  const closeCamera = () => {
-    if (stream) stream.getTracks().forEach((t) => t.stop());
+  const openCamera = useCallback(async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+      });
+
+      setStream(mediaStream);
+      setShowCamera(true);
+
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+        }
+      }, 100);
+    } catch {
+      showToast("Camera permission denied", "danger");
+    }
+  }, [showToast]);
+
+  const closeCamera = useCallback(() => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
     setShowCamera(false);
-  };
+  }, [stream]);
 
-  const capturePhoto = () => {
+  /* ================= CAPTURE PHOTO ================= */
+
+  const capturePhoto = useCallback(() => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0);
 
-    canvas.toBlob((blob) => {
-      setFormData({ ...formData, photo: blob });
-      setPhotoPreview(canvas.toDataURL("image/jpeg"));
-      closeCamera();
-    });
-  };
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    const imageData = canvas.toDataURL("image/jpeg", 0.7);
+
+    setPhotoPreview(imageData);
+    closeCamera();
+  }, [closeCamera]);
 
   /* ================= SUBMIT ================= */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    if (!locationEnabled) {
-      setToastMsg("Please enable location");
-      setToastVariant("danger");
-      setShowToast(true);
-      return;
-    }
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (!formData.photo) {
-      setToastMsg("Please capture photo");
-      setToastVariant("danger");
-      setShowToast(true);
-      return;
-    }
+      if (!locationEnabled) {
+        showToast("Please enable location", "danger");
+        return;
+      }
 
-    try {
-      await axios.post("https://talent-backend-i83x.onrender.com/api/attendance/submit", {
-        exam_code: formData.examCode,
-        institution_name: formData.institutionName,
-        fullName: formData.fullName,
-        fatherName: formData.fatherName,
-        mobileNumber: formData.mobileNumber,
-        aadharNumber: formData.aadharNumber,
-        candidateLat,
-        candidateLng,
-        photoBase64: photoPreview.split(",")[1],
-      });
+      if (!photoPreview) {
+        showToast("Please capture photo", "danger");
+        return;
+      }
 
-      setToastMsg("✅ Attendance completed successfully");
-      setToastVariant("success");
-      setShowToast(true);
+      try {
+        await axios.post(
+          "https://talent-assess.in/api/attendance/submit",
+          {
+            exam_code: formData.examCode.trim(),
+            institution_name: formData.institutionName,
+            fullName: formData.fullName,
+            fatherName: formData.fatherName,
+            mobileNumber: formData.mobileNumber,
+            aadharNumber: formData.aadharNumber,
+            candidateLat,
+            candidateLng,
+            photoBase64: photoPreview.split(",")[1],
+          },
+          { timeout: 10000 }
+        );
 
-      /* RESET */
-      setFormData({
-        examCode: "",
-        institutionName: "",
-        fullName: "",
-        fatherName: "",
-        mobileNumber: "",
-        aadharNumber: "",
-        photo: null,
-      });
+        showToast("✅ Attendance submitted successfully");
 
-      setPhotoPreview(null);
-      setLocationEnabled(false);
-      setCandidateLat(null);
-      setCandidateLng(null);
-    } catch (err) {
-      setToastMsg(
-        err?.response?.data?.error || "Attendance submission failed"
-      );
-      setToastVariant("danger");
-      setShowToast(true);
-    }
-  };
+        /* RESET */
+
+        setFormData({
+          examCode: "",
+          institutionName: "",
+          fullName: "",
+          fatherName: "",
+          mobileNumber: "",
+          aadharNumber: "",
+        });
+
+        setPhotoPreview(null);
+        setLocationEnabled(false);
+        setCandidateLat(null);
+        setCandidateLng(null);
+      } catch (err) {
+        showToast(
+          err?.response?.data?.message || "Attendance submission failed",
+          "danger"
+        );
+      }
+    },
+    [
+      formData,
+      candidateLat,
+      candidateLng,
+      photoPreview,
+      locationEnabled,
+      showToast,
+    ]
+  );
 
   return (
     <>
@@ -169,8 +208,10 @@ export default function AttendancePage() {
 
           <Form onSubmit={handleSubmit}>
             {/* EXAM DETAILS */}
+
             <Card className="p-3 mb-4 bg-light">
               <h5 className="fw-bold mb-3">Exam Details</h5>
+
               <Row>
                 <Col md={6}>
                   <Form.Label>Exam Code</Form.Label>
@@ -182,6 +223,7 @@ export default function AttendancePage() {
                     required
                   />
                 </Col>
+
                 <Col md={6}>
                   <Form.Label>Institution Name</Form.Label>
                   <Form.Control
@@ -196,25 +238,26 @@ export default function AttendancePage() {
             </Card>
 
             {/* CANDIDATE DETAILS */}
+
             <Card className="p-3 mb-4 bg-light">
               <h5 className="fw-bold mb-3">Candidate Details</h5>
+
               <Row className="mb-3">
                 <Col md={6}>
                   <Form.Label>Full Name</Form.Label>
                   <Form.Control
                     name="fullName"
                     value={formData.fullName}
-                    placeholder="Enter full name"
                     onChange={handleChange}
                     required
                   />
                 </Col>
+
                 <Col md={6}>
                   <Form.Label>Father Name</Form.Label>
                   <Form.Control
                     name="fatherName"
                     value={formData.fatherName}
-                    placeholder="Enter father name"
                     onChange={handleChange}
                     required
                   />
@@ -227,17 +270,16 @@ export default function AttendancePage() {
                   <Form.Control
                     name="mobileNumber"
                     value={formData.mobileNumber}
-                    placeholder="Enter mobile number"
                     onChange={handleChange}
                     required
                   />
                 </Col>
+
                 <Col md={6}>
                   <Form.Label>Aadhar Number</Form.Label>
                   <Form.Control
                     name="aadharNumber"
                     value={formData.aadharNumber}
-                    placeholder="Enter Aadhar number"
                     onChange={handleChange}
                     required
                   />
@@ -246,22 +288,27 @@ export default function AttendancePage() {
             </Card>
 
             {/* LOCATION */}
+
             <div className="text-center mb-4">
               <Button
                 type="button"
                 variant={locationEnabled ? "success" : "outline-primary"}
-                onClick={enableLocation}
+                onClick={toggleLocation}
               >
-                {locationEnabled ? "📍 Location Enabled" : "Enable Live Location"}
+                {locationEnabled
+                  ? "📍 Location Enabled"
+                  : "Enable Live Location"}
               </Button>
+
               {locationEnabled && (
                 <div className="mt-2">
-                  <Badge bg="success">Verified</Badge>
+                  <Badge bg="success">Location Verified</Badge>
                 </div>
               )}
             </div>
 
             {/* PHOTO */}
+
             <div className="text-center mb-4">
               {!photoPreview ? (
                 <Button type="button" onClick={openCamera}>
@@ -275,7 +322,9 @@ export default function AttendancePage() {
                     width={220}
                     alt="preview"
                   />
+
                   <br />
+
                   <Button type="button" variant="warning" onClick={openCamera}>
                     Retake Photo
                   </Button>
@@ -291,10 +340,12 @@ export default function AttendancePage() {
       </Container>
 
       {/* CAMERA MODAL */}
+
       <Modal show={showCamera} onHide={closeCamera} centered>
         <Modal.Body className="text-center">
           <video ref={videoRef} autoPlay className="w-100 rounded" />
           <canvas ref={canvasRef} hidden />
+
           <Button className="mt-3" onClick={capturePhoto}>
             Capture Photo
           </Button>
@@ -302,16 +353,27 @@ export default function AttendancePage() {
       </Modal>
 
       {/* TOAST */}
-      <ToastContainer position="top-end">
+
+      <ToastContainer
+        position="top-center"
+        className="p-3"
+        style={{
+          position: "fixed",
+          top: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 99999,
+        }}
+      >
         <Toast
-          bg={toastVariant}
-          show={showToast}
-          onClose={() => setShowToast(false)}
+          bg={toast.variant}
+          show={toast.show}
+          onClose={() => setToast({ ...toast, show: false })}
           autohide
           delay={3000}
         >
-          <Toast.Body className="text-white fw-semibold">
-            {toastMsg}
+          <Toast.Body className="text-white fw-semibold text-center">
+            {toast.msg}
           </Toast.Body>
         </Toast>
       </ToastContainer>

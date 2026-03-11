@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://talent-backend-i83x.onrender.com";
+const API_URL = "https://talent-assess.in";
 
 const instructions = [
   {

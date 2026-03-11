@@ -2,7 +2,7 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 
-const API = "https://talent-backend-i83x.onrender.com";
+const API = " https://talent-assess.in";
 const TOTAL_TIME = 60 * 60;
 
 /* ─── Axios instance with timeout ─── */
@@ -440,16 +440,22 @@ export default function StartExam() {
           transition: all 0.15s ease;
           user-select: none;
         }
+        .option-card input{
+  margin-right:10px;
+}
         .option-card:hover:not(.selected) {
           border-color: var(--accent);
           background: rgba(99,102,241,0.06);
         }
-        .option-card.selected {
-          border-color: var(--accent);
-          background: rgba(99,102,241,0.12);
-          box-shadow: 0 0 0 1px var(--accent);
-        }
+      .option-card.selected {
+  border-color: #6366f1;
+  background: white;
+  color: black;
+}
 
+.option-card.selected .option-text{
+  color:#111;
+}
         .option-label {
           width: 32px; height: 32px;
           border-radius: 8px;
@@ -788,28 +794,42 @@ export default function StartExam() {
                 <>
                   <p className="question-text">{q.question_text}</p>
 
-                  <div className="options-grid">
-                    {["a", "b", "c", "d"].map((opt) => {
-                      const text = q[`option_${opt}`];
-                      if (!text) return null;
-                      const selected = answers[q.id] === opt;
-                      return (
-                        <div
-                          key={opt}
-                          className={`option-card${selected ? " selected" : ""}`}
-                          onClick={() => handleOption(opt)}
-                          role="radio"
-                          aria-checked={selected}
-                          tabIndex={0}
-                          onKeyDown={(e) => e.key === "Enter" && handleOption(opt)}
-                        >
-                          <div className="option-label">{opt.toUpperCase()}</div>
-                          <div className="option-text">{text}</div>
-                          <div className="option-check" />
-                        </div>
-                      );
-                    })}
-                  </div>
+                 <div className="options-grid">
+  {["a", "b", "c", "d"].map((opt) => {
+    const text = q[`option_${opt}`];
+    if (!text) return null;
+
+    const selected = answers[q.id] === opt;
+
+    return (
+      <label
+        key={opt}
+        className={`option-card ${selected ? "selected" : ""}`}
+      >
+        <input
+          type="radio"
+          name={`question-${q.id}`}
+          checked={selected}
+          onChange={() => handleOption(opt)}
+          style={{
+            width: "18px",
+            height: "18px",
+            accentColor: "#6366f1",
+            cursor: "pointer"
+          }}
+        />
+
+        <div className="option-label">
+          {opt.toUpperCase()}
+        </div>
+
+        <div className="option-text">
+          {text}
+        </div>
+      </label>
+    );
+  })}
+</div>
                 </>
               ) : (
                 <p style={{ color: "var(--muted)", textAlign: "center", marginTop: 60 }}>

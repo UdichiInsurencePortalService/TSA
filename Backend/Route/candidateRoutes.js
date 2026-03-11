@@ -1,14 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/uploadMemory");
-const candidateController = require("../Controller/candidateController");
 
-router.post(
-  "/candidates/upload",
-  upload.single("file"), // 👈 MUST MATCH frontend key
-  candidateController.uploadCandidates
-);
+const { sendExamLink } = require("../Controller/candidateController");
 
-router.get("/candidates", candidateController.getCandidates);
+router.post("/exam/send-link", sendExamLink);
 
 module.exports = router;

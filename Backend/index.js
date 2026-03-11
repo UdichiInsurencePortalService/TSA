@@ -38,10 +38,10 @@ app.use(
 
 // -------------------- BODY PARSERS -------------------- //
 app.use(express.json({ limit: "20mb" }));
-app.use(express.urlencoded({ extended: true, limit: "20mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// -------------------- STATIC -------------------- //
+// ✅ Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // -------------------- ROUTES -------------------- //
@@ -58,7 +58,6 @@ app.use("/api", require("./Route/examLinkvalidationcheck"));
 app.use("/api", require("./Route/examSubmitRoutes"));
 app.use("/api", require("./Route/attendanceRoutes"));
 app.use("/api", require("./Route/liveSessionroutes"));
-app.use("/api", require("./Route/examsubmitroute"));
 
 
 app.get("/", (req, res) => {

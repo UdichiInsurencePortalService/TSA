@@ -1,12 +1,14 @@
 const pool = require("./postgressdb");
 
-exports.getExamCenter = async (exam_code, institution_name) => {
+// ✅ Only exam_code check
+exports.getExamCenter = async (exam_code) => {
   const result = await pool.query(
     `SELECT center_lat, center_lng, allowed_radius
      FROM scheduled_exams
-     WHERE exam_code = $1 AND institution_name = $2`,
-    [exam_code, institution_name]
+     WHERE exam_code = $1`,
+    [exam_code]
   );
+
   return result.rows[0];
 };
 
@@ -27,13 +29,13 @@ exports.saveAttendance = async (data) => {
 
   await pool.query(
     `INSERT INTO attendance
-     (exam_code, institution_name, full_name, father_name,
-      mobile_number, aadhar_number, photo_path,
-      candidate_lat, candidate_lng, distance_meters, attendance_status)
+    (exam_code, institution_name, full_name, father_name,
+     mobile_number, aadhar_number, photo_path,
+     candidate_lat, candidate_lng, distance_meters, attendance_status)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
     [
       exam_code,
-      institution_name,
+      institution_name,  // ✅ second position
       full_name,
       father_name,
       mobile_number,
@@ -51,12 +53,12 @@ exports.getAllAttendance = async () => {
     SELECT
       id,
       exam_code,
-      institution_name,
       full_name,
       father_name,
       mobile_number,
       aadhar_number,
       photo_path,
+      institution_name,
       candidate_lat,
       candidate_lng,
       distance_meters,

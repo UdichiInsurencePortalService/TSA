@@ -1,6 +1,8 @@
-const router = require("express").Router();
-const { sendExamToCandidates } = require("../Controller/examLinkController");
+const express = require("express");
+const router = express.Router();
 
-router.post("/exam/send-link", sendExamToCandidates);
+const candidateController = require("../Controller/candidateController");
+
+router.post("/exam/send-link", candidateController.sendExamLink);
 
 module.exports = router;

@@ -7,7 +7,6 @@ exports.submitAttendance = async (req, res) => {
   try {
     const {
       exam_code,
-      institution_name,
       fullName,
       fatherName,
       mobileNumber,
@@ -15,29 +14,30 @@ exports.submitAttendance = async (req, res) => {
       candidateLat,
       candidateLng,
       photoBase64,
+      institution_name,
     } = req.body;
 
-    if (
-      !exam_code ||
-      !institution_name ||
-      !fullName ||
-      !aadharNumber ||
-      !photoBase64
-    ) {
-      return res.status(400).json({ error: "Missing required fields" });
+    // ✅ Validation
+    if (!exam_code || !fullName || !aadharNumber || !photoBase64) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
     }
 
-    // 🔹 Fetch exam center
-    const center = await attendanceModel.getExamCenter(
-      exam_code,
-      institution_name
-    );
+    const cleanExamCode = exam_code.trim();
+
+    // ✅ Fetch exam center (ONLY exam_code)
+    const center = await attendanceModel.getExamCenter(cleanExamCode);
 
     if (!center) {
-      return res.status(404).json({ error: "Invalid exam center" });
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Exam Code",
+      });
     }
 
-    // 🔹 Calculate distance
+    // ✅ Calculate distance
     const distance = getDistanceMeters(
       center.center_lat,
       center.center_lng,
@@ -48,73 +48,79 @@ exports.submitAttendance = async (req, res) => {
     const attendance_status =
       distance <= center.allowed_radius ? "IN_CENTER" : "OUTSIDE_CENTER";
 
-    // 🔹 Save photo (CORRECT WAY)
+    // ================= PHOTO SAVE =================
+
     const uploadDir = path.join(__dirname, "../uploads/attendance");
+
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
     const fileName = `${Date.now()}_${aadharNumber}.jpg`;
-    const fullFilePath = path.join(uploadDir, fileName);
+    const filePath = path.join(uploadDir, fileName);
 
-    fs.writeFileSync(
-      fullFilePath,
-      Buffer.from(photoBase64, "base64")
-    );
+    const base64Data = photoBase64.replace(/^data:image\/\w+;base64,/, "");
 
-    // ✅ PUBLIC RELATIVE PATH (THIS IS IMPORTANT)
-    const relativePhotoPath = `/uploads/attendance/${fileName}`;
+    fs.writeFileSync(filePath, Buffer.from(base64Data, "base64"));
 
-    // 🔹 Save DB
+    const photoPath = `/uploads/attendance/${fileName}`;
+
+    // ================= SAVE DB =================
+
     await attendanceModel.saveAttendance({
-      exam_code,
-      institution_name,
+      exam_code: cleanExamCode,
       full_name: fullName,
       father_name: fatherName,
       mobile_number: mobileNumber,
       aadhar_number: aadharNumber,
-      photo_path: relativePhotoPath,
+      institution_name: institution_name,
+      photo_path: photoPath,
       candidate_lat: candidateLat,
       candidate_lng: candidateLng,
       distance_meters: distance,
       attendance_status,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+      message: "Attendance Submitted",
       attendance_status,
       distance_meters: distance,
     });
-  } catch (err) {
-    console.error("ATTENDANCE ERROR:", err);
-    res.status(500).json({ error: "Attendance submission failed" });
+  } catch (error) {
+    console.error("Attendance Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Attendance submission failed",
+    });
   }
 };
 
-// -------------------- GET ALL ATTENDANCE -------------------- //
+// ================= GET ALL ATTENDANCE =================
+
 exports.getAllAttendance = async (req, res) => {
   try {
     const data = await attendanceModel.getAllAttendance();
 
     const host = `${req.protocol}://${req.get("host")}`;
 
-    const updatedData = data.map(item => ({
+    const formatted = data.map((item) => ({
       ...item,
-      photo_url: item.photo_path
-        ? `${host}${item.photo_path}`
-        : null,
+      photo_url: item.photo_path ? `${host}${item.photo_path}` : null,
     }));
 
     res.status(200).json({
       success: true,
-      total: updatedData.length,
-      data: updatedData,
+      total: formatted.length,
+      data: formatted,
     });
-  } catch (err) {
-    console.error("GET ATTENDANCE ERROR:", err);
+  } catch (error) {
+    console.error("Fetch Attendance Error:", error);
+
     res.status(500).json({
       success: false,
-      error: "Failed to fetch attendance",
+      message: "Failed to fetch attendance",
     });
   }
 };

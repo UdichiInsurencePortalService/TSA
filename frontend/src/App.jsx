@@ -42,6 +42,7 @@ import Transport from "./Components/Pages/Industries/Transport/Transport.jsx";
 import Hospitallity from "./Components/Pages/Industries/Hospitality/Hospitallity.jsx";
 import Legal from "./Components/Pages/Industries/Legal/Legal.jsx";
 import Staffing from "./Components/Pages/Industries/Staffing/Staffing.jsx";
+import UnderDevelopment from "./Components/UnderDevelopment/UnderDevelopment.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -99,6 +100,16 @@ const App = () => {
         <Route path="/staffing" element={<Staffing/>} />
         <Route path="/hospital" element={<Hospitallity />} />
         <Route path="/legal" element={<Legal />} />
+
+
+<Route path="/blog"                 element={<UnderDevelopment/>} />
+<Route path="/case-studies"         element={<UnderDevelopment />} />
+<Route path="/webinars"             element={<UnderDevelopment />} />
+<Route path="/roi-calculator"       element={<UnderDevelopment />} />
+<Route path="/hiring-glossary"      element={<UnderDevelopment />} />
+<Route path="/assessment-resources" element={<UnderDevelopment />} />
+
+
 
         {/* ❌ No Navbar/Footer */}
         <Route path="/studentdemo" element={<Studentdemo />} />

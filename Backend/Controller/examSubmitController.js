@@ -1,92 +1,125 @@
 const pool = require("../Model/postgressdb");
-const generateResultPDF = require("../utils/generateResultPDF");
+const generateExamPDF = require("../utils/generateExamPDF");
 const sendResultMail = require("../utils/sendResultMail");
 
 exports.submitExam = async (req, res) => {
   try {
     const {
       exam_code,
-      language_code,
       candidate_name,
       father_name,
       mobile_number,
+      language,
       answers,
-      time_taken_minutes,
+      time_taken,
+      reason,
     } = req.body;
 
-    if (!exam_code || !language_code || !candidate_name || !answers) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!exam_code || !mobile_number || !answers) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
     }
 
-    const scheduled = await pool.query(
-      `SELECT exam_date, exam_time, assessor_name
-       FROM scheduled_exams
-       WHERE exam_code = $1`,
-      [exam_code]
-    );
+    const questionIds = Object.keys(answers);
 
-    if (!scheduled.rows.length) {
-      return res.status(404).json({ error: "Exam not scheduled" });
-    }
-
-    const meta = scheduled.rows[0];
-
-    const qRes = await pool.query(
+    const questionQuery = await pool.query(
       `SELECT id, correct_option
        FROM questions
-       WHERE exam_code = $1 AND language_code = $2`,
-      [exam_code, language_code]
+       WHERE id = ANY($1::int[])`,
+      [questionIds]
     );
 
-    let correct = 0;
-    let attempted = 0;
+    let obtained_marks = 0;
 
-    qRes.rows.forEach((q) => {
-      const selected = answers[String(q.id)];
-      if (selected) {
-        attempted++;
-        if (selected === q.correct_option) correct++;
+    questionQuery.rows.forEach((q) => {
+      const studentAnswer = answers[q.id];
+
+      if (
+        studentAnswer &&
+        studentAnswer.toLowerCase() ===
+          q.correct_option.toLowerCase()
+      ) {
+        obtained_marks += 4;
       }
     });
 
-    const total = qRes.rows.length;
-    const percentage = Math.round((correct / total) * 100);
-    const result_status = percentage >= 60 ? "PASS" : "FAIL";
+    const total_marks = questionIds.length * 4;
 
-    const resultData = {
-      candidate_name,
-      father_name,
-      mobile_number,
-      exam_code,
-      language_code,
-      total_questions: total,
-      attempted_questions: attempted,
-      correct_answers: correct,
-      percentage,
-      result_status,
-      time_taken_minutes,
-      exam_date: meta.exam_date,
-      exam_time: meta.exam_time,
-    };
+    const result =
+      obtained_marks >= total_marks * 0.6 ? "PASS" : "FAIL";
 
-    // ✅ SEND RESPONSE FIRST (CRITICAL)
-    res.json({
+    /* ================= SAVE RESULT ================= */
+
+    await pool.query(
+      `INSERT INTO exam_results
+      (exam_code,candidate_name,father_name,mobile_number,
+       total_marks,obtained_marks,result,answers,time_taken,
+       language,reason)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [
+        exam_code,
+        candidate_name,
+        father_name,
+        mobile_number,
+        total_marks,
+        obtained_marks,
+        result,
+        JSON.stringify(answers),
+        time_taken,
+        language,
+        reason,
+      ]
+    );
+
+    /* ================= RESPONSE ================= */
+
+    res.status(200).json({
       success: true,
-      percentage,
-      result: result_status,
+      data: {
+        total_marks,
+        obtained_marks,
+        result,
+      },
     });
 
-    // ================= OPTIONAL EMAIL (SAFE) =================
-    try {
-      const pdfPath = await generateResultPDF(resultData);
-      await sendResultMail(pdfPath);
-    } catch (mailErr) {
-      console.error("EMAIL FAILED (ignored):", mailErr.message);
-    }
-    // =========================================================
+    /* ================= BACKGROUND PROCESS ================= */
 
-  } catch (err) {
-    console.error("SUBMIT ERROR:", err);
-    res.status(500).json({ error: "Submission failed" });
+    process.nextTick(async () => {
+      try {
+        const results = await pool.query(
+          `SELECT candidate_name,
+                  mobile_number,
+                  total_marks,
+                  obtained_marks,
+                  result
+           FROM exam_results
+           WHERE exam_code=$1
+           ORDER BY submitted_at ASC`,
+          [exam_code]
+        );
+
+        if (results.rows.length === 0) return;
+
+        const pdfPath = await generateExamPDF(
+          exam_code,
+          results.rows
+        );
+
+        await sendResultMail(exam_code, pdfPath);
+
+      } catch (err) {
+        console.error("PDF MAIL ERROR:", err);
+      }
+    });
+
+  } catch (error) {
+    console.error("SERVER ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
